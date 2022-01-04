@@ -22,5 +22,6 @@
     "!<rootDir>/src/**/*.d.ts",
     "!**/node_modules/**"
   ],
-  "testEnvironment": "node"
+  "testEnvironment": "node",
+  "testResultsProcessor": "jest-sonar-reporter"
 }
