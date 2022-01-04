@@ -28,7 +28,7 @@ jobs:
       - run: |
           set -e
           VERSION=4.6.2.2472
-          SCANNER_DIRECTORY=/tmp/cache/scanner
+          SCANNER_DIRECTORY=./scanner
           export SONAR_USER_HOME=$SCANNER_DIRECTORY/.sonar
           OS="linux"
           echo $SONAR_USER_HOME
