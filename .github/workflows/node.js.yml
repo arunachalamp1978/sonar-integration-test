@@ -9,6 +9,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,9 +30,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
       - run: |
-          set -e
+          echo Setting
           VERSION=4.6.2.2472
-          SCANNER_DIRECTORY=./scanner
+          export SCANNER_DIRECTORY=./scanner
           export SONAR_USER_HOME=$SCANNER_DIRECTORY/.sonar
           OS="linux"
           echo $SONAR_USER_HOME
@@ -42,4 +46,7 @@ jobs:
       - run: npm ci
       - run: npm run cover
       - run: |
-          $SCANNER_DIRECTORY/sonar-scanner-$VERSION-$OS/bin/sonar-scanner
+          echo Final
+          VERSION=4.6.2.2472
+          OS="linux"
+          ./scanner/sonar-scanner-$VERSION-$OS/bin/sonar-scanner
