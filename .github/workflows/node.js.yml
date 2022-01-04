@@ -25,11 +25,21 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
+      - run: |
+          set -e
+          VERSION=4.6.2.2472
+          SCANNER_DIRECTORY=/tmp/cache/scanner
+          export SONAR_USER_HOME=$SCANNER_DIRECTORY/.sonar
+          OS="linux"
+          echo $SONAR_USER_HOME
+          if [[ ! -x "$SCANNER_DIRECTORY/sonar-scanner-$VERSION-$OS/bin/sonar-scanner" ]]; then
+            curl -Ol https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$VERSION-$OS.zip
+            unzip -qq -o sonar-scanner-cli-$VERSION-$OS.zip -d $SCANNER_DIRECTORY
+          fi
+
+          chmod +x $SCANNER_DIRECTORY/sonar-scanner-$VERSION-$OS/bin/sonar-scanner
+          chmod +x $SCANNER_DIRECTORY/sonar-scanner-$VERSION-$OS/jre/bin/java
       - run: npm ci
       - run: npm run cover
-
-      - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - run: |
+          $SCANNER_DIRECTORY/sonar-scanner-$VERSION-$OS/bin/sonar-scanner
